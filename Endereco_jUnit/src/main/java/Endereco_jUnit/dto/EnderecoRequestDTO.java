@@ -17,16 +17,16 @@ import lombok.Setter;
 @NoArgsConstructor
 public class EnderecoRequestDTO {
 
-    @NotNull(message = "rua obrigátoria") @NotBlank(message = "rua obrigátoria")
+    @NotNull(message = "rua obrigatória") @NotBlank(message = "rua obrigátoria")
     private String rua;
 
-    @NotNull(message = "número obrigátorio")
+    @NotNull(message = "número obrigatório")
     private Integer numero;
 
-    @NotNull(message = "cidade obrigátoria") @NotBlank(message = "cidade obrigátoria")
+    @NotNull(message = "cidade obrigatória") @NotBlank(message = "cidade obrigátoria")
     private String cidade;
 
-    @NotNull(message = "estado obrigátorio") @Enumerated(EnumType.STRING)
+    @NotNull(message = "estado obrigatório") @Enumerated(EnumType.STRING)
     private EnderecoUF estado;
 
     public Endereco toEndereco()

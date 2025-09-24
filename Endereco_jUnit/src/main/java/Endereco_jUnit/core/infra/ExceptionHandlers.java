@@ -20,6 +20,13 @@ public class ExceptionHandlers {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageRestError);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<MessageRestError> IllegalArgumentExceptionHandler(IllegalArgumentException ex)
+    {
+        MessageRestError messageRestError = new MessageRestError(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageRestError);
+    }
+
     //Exceção para ID não encontrado
     @ExceptionHandler(IdNaoEncontradoException.class)
     public ResponseEntity<MessageRestError> IdNaoEncontradoExceptionHandler(IdNaoEncontradoException ex)
