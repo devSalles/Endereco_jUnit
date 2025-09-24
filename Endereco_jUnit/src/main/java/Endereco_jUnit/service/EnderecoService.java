@@ -1,5 +1,6 @@
 package Endereco_jUnit.service;
 
+import Endereco_jUnit.core.exception.BancoVazioException;
 import Endereco_jUnit.core.exception.IdNaoEncontradoException;
 import Endereco_jUnit.dto.EnderecoRequestDTO;
 import Endereco_jUnit.dto.EnderecoResponseDTO;
@@ -18,6 +19,19 @@ public class EnderecoService {
 
     public Endereco add(EnderecoRequestDTO enderecoRequestDTO)
     {
+        if(enderecoRequestDTO.getNumero()<=0)
+        {
+            throw new IllegalArgumentException("Número não pode ser 0 ou negativo");
+        }
+
+        Boolean jaExiste=this.enderecoRepository.existsByRuaAndNumeroAndEstadoAndCidade(
+                enderecoRequestDTO.getRua(), enderecoRequestDTO.getNumero(),enderecoRequestDTO.getEstado(),enderecoRequestDTO.getCidade()
+        );
+        if(jaExiste)
+        {
+            throw new IllegalArgumentException("Endereço já cadastrado");
+        }
+
         Endereco endereco = enderecoRequestDTO.toEndereco();
         return this.enderecoRepository.save(endereco);
     }
@@ -25,6 +39,21 @@ public class EnderecoService {
     public Endereco editById(Long id, EnderecoRequestDTO enderecoRequestDTO)
     {
         Endereco enderecoID=this.enderecoRepository.findById(id).orElseThrow(IdNaoEncontradoException::new);
+
+        if(enderecoRequestDTO.getNumero()<=0)
+        {
+            throw new IllegalArgumentException("Número não pode ser 0 ou negativo");
+        }
+
+        Boolean jaExiste = this.enderecoRepository.existsByRuaAndNumeroAndEstadoAndCidade(
+                enderecoID.getRua(), enderecoRequestDTO.getNumero(),enderecoRequestDTO.getEstado(),enderecoRequestDTO.getCidade()
+        );
+
+        if(jaExiste)
+        {
+            throw new IllegalArgumentException("Endereço já cadastrado");
+        }
+
         enderecoRequestDTO.updateEndereco(enderecoID);
         return this.enderecoRepository.save(enderecoID);
     }
@@ -58,7 +87,7 @@ public class EnderecoService {
     {
         if(enderecoRepository.findAll().isEmpty())
         {
-            throw new IdNaoEncontradoException();
+            throw new BancoVazioException();
         }
 
         this.enderecoRepository.deleteAll();
