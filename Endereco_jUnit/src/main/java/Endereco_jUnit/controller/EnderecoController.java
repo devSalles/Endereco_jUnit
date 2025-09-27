@@ -4,6 +4,7 @@ import Endereco_jUnit.dto.EnderecoRequestDTO;
 import Endereco_jUnit.dto.EnderecoResponseDTO;
 import Endereco_jUnit.service.EnderecoService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +21,13 @@ public class EnderecoController {
     private final EnderecoService enderecoService;
 
     @PostMapping("/add")
-    public ResponseEntity<Object> addNew(@RequestBody EnderecoRequestDTO enderecoRequestDTO)
+    public ResponseEntity<Object> addNew(@Valid @RequestBody EnderecoRequestDTO enderecoRequestDTO)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.enderecoService.add(enderecoRequestDTO));
     }
 
     @PutMapping("/edit/{id}")
-    public ResponseEntity<Object> editById(@PathVariable Long id, @RequestBody EnderecoRequestDTO enderecoRequestDTO)
+    public ResponseEntity<Object> editById(@PathVariable Long id,@Valid @RequestBody EnderecoRequestDTO enderecoRequestDTO)
     {
         return ResponseEntity.ok(this.enderecoService.editById(id,enderecoRequestDTO));
     }

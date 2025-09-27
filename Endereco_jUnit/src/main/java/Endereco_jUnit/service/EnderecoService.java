@@ -18,9 +18,11 @@ public class EnderecoService {
     private final EnderecoRepository enderecoRepository;
 
 
-    public void EnderecoExistente(EnderecoRequestDTO enderecoRequestDTO)
+    public void EnderecoExistenteAndNumInvalido(EnderecoRequestDTO enderecoRequestDTO)
     {
-        Boolean jaExiste = this.enderecoRepository.existsByRuaAndNumeroAndEstadoAndCidade(enderecoRequestDTO.getRua(), enderecoRequestDTO.getNumero(),enderecoRequestDTO.getEstado(),enderecoRequestDTO.getCidade());
+        Boolean jaExiste = this.enderecoRepository.existsByRuaAndNumeroAndEstadoAndCidade(
+                enderecoRequestDTO.getRua(), enderecoRequestDTO.getNumero(),enderecoRequestDTO.getEstado(),enderecoRequestDTO.getCidade()
+        );
 
         if(jaExiste)
         {
@@ -30,12 +32,7 @@ public class EnderecoService {
 
     public Endereco add(EnderecoRequestDTO enderecoRequestDTO)
     {
-        if(enderecoRequestDTO.getNumero()<=0)
-        {
-            throw new IllegalArgumentException("Número não pode ser 0 ou negativo");
-        }
-
-        EnderecoExistente(enderecoRequestDTO);
+        EnderecoExistenteAndNumInvalido(enderecoRequestDTO);
 
         Endereco endereco = enderecoRequestDTO.toEndereco();
         return this.enderecoRepository.save(endereco);
@@ -45,12 +42,7 @@ public class EnderecoService {
     {
         Endereco enderecoID=this.enderecoRepository.findById(id).orElseThrow(IdNaoEncontradoException::new);
 
-        if(enderecoRequestDTO.getNumero()<=0)
-        {
-            throw new IllegalArgumentException("Número não pode ser 0 ou negativo");
-        }
-
-        EnderecoExistente(enderecoRequestDTO);
+        EnderecoExistenteAndNumInvalido(enderecoRequestDTO);
 
         enderecoRequestDTO.updateEndereco(enderecoID);
         return this.enderecoRepository.save(enderecoID);
