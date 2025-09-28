@@ -10,6 +10,7 @@ public record EnderecoResponseDTO(
         String cidade,
         EnderecoUF estado
 ) {
+    //Metodo para exibição de dado
     public static EnderecoResponseDTO fromEndereco(Endereco endereco)
     {
         return new EnderecoResponseDTO(endereco.getId(), endereco.getRua(), endereco.getNumero(), endereco.getCidade(),endereco.getEstado());

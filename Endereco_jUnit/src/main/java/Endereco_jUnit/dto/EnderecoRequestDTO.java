@@ -30,6 +30,7 @@ public class EnderecoRequestDTO {
     @NotNull(message = "estado obrigatório") @Enumerated(EnumType.STRING)
     private EnderecoUF estado;
 
+    //Conversão de DTO para entidade para persistência do objeto
     public Endereco toEndereco()
     {
         Endereco endereco = new Endereco();
@@ -42,6 +43,7 @@ public class EnderecoRequestDTO {
         return endereco;
     }
 
+    //Conversão de DTO para entidade para atualização de endereço
     public Endereco updateEndereco(Endereco endereco)
     {
         endereco.setRua(this.getRua());

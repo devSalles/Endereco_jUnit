@@ -1,6 +1,5 @@
 package Endereco_jUnit.service;
 
-import Endereco_jUnit.core.exception.BancoVazioException;
 import Endereco_jUnit.core.exception.IdNaoEncontradoException;
 import Endereco_jUnit.dto.EnderecoRequestDTO;
 import Endereco_jUnit.dto.EnderecoResponseDTO;
@@ -17,7 +16,7 @@ public class EnderecoService {
 
     private final EnderecoRepository enderecoRepository;
 
-
+    //Metodo para checagem de existência de endereço
     public void EnderecoExistenteAndNumInvalido(EnderecoRequestDTO enderecoRequestDTO)
     {
         Boolean jaExiste = this.enderecoRepository.existsByRuaAndNumeroAndEstadoAndCidade(
@@ -32,6 +31,7 @@ public class EnderecoService {
 
     public Endereco add(EnderecoRequestDTO enderecoRequestDTO)
     {
+        //Chamada do metodo para verificação
         EnderecoExistenteAndNumInvalido(enderecoRequestDTO);
 
         Endereco endereco = enderecoRequestDTO.toEndereco();
@@ -42,12 +42,12 @@ public class EnderecoService {
     {
         Endereco enderecoID=this.enderecoRepository.findById(id).orElseThrow(IdNaoEncontradoException::new);
 
+        //Chamada do metodo para verificação
         EnderecoExistenteAndNumInvalido(enderecoRequestDTO);
 
         enderecoRequestDTO.updateEndereco(enderecoID);
         return this.enderecoRepository.save(enderecoID);
     }
-
 
     public List<EnderecoResponseDTO> showAll()
     {
@@ -77,7 +77,7 @@ public class EnderecoService {
     {
         if(enderecoRepository.findAll().isEmpty())
         {
-            throw new BancoVazioException();
+            throw new IllegalArgumentException("Nenhum dado salvo no banco de dados");
         }
 
         this.enderecoRepository.deleteAll();

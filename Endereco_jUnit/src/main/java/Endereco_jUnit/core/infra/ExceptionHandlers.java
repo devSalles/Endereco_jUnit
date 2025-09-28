@@ -1,6 +1,5 @@
 package Endereco_jUnit.core.infra;
 
-import Endereco_jUnit.core.exception.BancoVazioException;
 import Endereco_jUnit.core.exception.IdNaoEncontradoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +19,7 @@ public class ExceptionHandlers {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageRestError);
     }
 
+    //Exceção para requisições inválidas globais
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<MessageRestError> IllegalArgumentExceptionHandler(IllegalArgumentException ex)
     {
@@ -30,14 +30,6 @@ public class ExceptionHandlers {
     //Exceção para ID não encontrado
     @ExceptionHandler(IdNaoEncontradoException.class)
     public ResponseEntity<MessageRestError> IdNaoEncontradoExceptionHandler(IdNaoEncontradoException ex)
-    {
-        MessageRestError messageRestError = new MessageRestError(HttpStatus.NOT_FOUND, ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageRestError);
-    }
-
-    //Exceção para banco de dados vazio
-    @ExceptionHandler(BancoVazioException.class)
-    public ResponseEntity<MessageRestError> BancoVazioExceptionHandler(BancoVazioException ex)
     {
         MessageRestError messageRestError = new MessageRestError(HttpStatus.NOT_FOUND, ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(messageRestError);

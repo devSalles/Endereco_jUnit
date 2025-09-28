@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EnderecoRepository extends JpaRepository<Endereco,Long> {
 
+    //Metodo para checagem de existência de endereço
     boolean existsByRuaAndNumeroAndEstadoAndCidade(String rua, Integer numero, EnderecoUF enderecoUF, String cidade);
 }
