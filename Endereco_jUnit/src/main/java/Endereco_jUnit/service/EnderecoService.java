@@ -54,7 +54,7 @@ public class EnderecoService {
         List<Endereco>enderecoShowAll=this.enderecoRepository.findAll();
         if(enderecoShowAll.isEmpty())
         {
-            throw new IdNaoEncontradoException();
+            throw new IllegalArgumentException("Nenhum dado salvo no banco de dados");
         }
 
         return enderecoShowAll.stream().map(EnderecoResponseDTO::fromEndereco).toList();
