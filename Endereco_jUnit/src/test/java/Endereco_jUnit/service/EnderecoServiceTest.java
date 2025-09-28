@@ -196,6 +196,7 @@ class EnderecoServiceTest {
     {
         when(enderecoRepository.findById(anyLong())).thenReturn(Optional.empty());
 
+        //Checagem de lançamento de exceção para ID não encontrado
         assertThrows(IdNaoEncontradoException.class,() -> this.enderecoService.showById(99L));
 
         verify(enderecoRepository,times(1)).findById(99L);
@@ -203,8 +204,26 @@ class EnderecoServiceTest {
 
     // ---metodo Delete---
     @Test
-    void deleteById() {
-        
+    void deleteById_DeveDeletarIdQuandoExistir() {
+        when(enderecoRepository.findById(anyLong())).thenReturn(Optional.of(validEndereco));
+        doNothing().when(enderecoRepository).delete(validEndereco);
+
+        Boolean result = this.enderecoService.deleteById(1L);
+        assertTrue(result);
+
+        verify(enderecoRepository,times(1)).findById(1L);
+        verify(enderecoRepository,times(1)).delete(validEndereco);
+    }
+
+    @Test
+    void deleteById_DeveLancarExcecaoQuandoIdNaoExistir()
+    {
+        when(enderecoRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        //Checagem de lançamento de exceção para ID não encontrado
+        assertThrows(IdNaoEncontradoException.class,()->this.enderecoService.deleteById(99L));
+
+        verify(enderecoRepository,times(1)).findById(99L);
     }
 
     // ---metodo deleteAll---
