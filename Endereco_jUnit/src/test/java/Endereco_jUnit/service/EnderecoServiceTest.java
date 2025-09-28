@@ -3,6 +3,7 @@ package Endereco_jUnit.service;
 import Endereco_jUnit.Enum.EnderecoUF;
 import Endereco_jUnit.core.exception.IdNaoEncontradoException;
 import Endereco_jUnit.dto.EnderecoRequestDTO;
+import Endereco_jUnit.dto.EnderecoResponseDTO;
 import Endereco_jUnit.model.Endereco;
 import Endereco_jUnit.repository.EnderecoRepository;
 import jakarta.validation.Validation;
@@ -15,6 +16,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import jakarta.validation.*;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.TestPropertySource;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -151,18 +155,56 @@ class EnderecoServiceTest {
 
     // ---metodo showAll---
     @Test
-    void showAll() {
+    void showAll_DeveRetornarTodosOsObjetosNoBancoDeDados() {
+        when(enderecoRepository.findAll()).thenReturn(List.of(validEndereco));
+
+        List<EnderecoResponseDTO> result = this.enderecoService.showAll();
+        assertNotNull(result);
+        assertEquals(validEndereco.getRua(),result.get(0).rua());
+        assertEquals(validEndereco.getNumero(),result.get(0).numero());
+        assertEquals(validEndereco.getCidade(),result.get(0).cidade());
+        assertEquals(validEndereco.getEstado(),result.get(0).estado());
+
+        verify(enderecoRepository,times(1)).findAll();
+    }
+
+    @Test
+    void showAll_DeveLancarExcecaoQuandoBancoEstiverVazio()
+    {
+        when(enderecoRepository.findAll()).thenReturn(List.of());
+
+        //Checagem de lançamento de exceção para banco de dados vazio
+        assertThrows(IllegalArgumentException.class,() -> this.enderecoService.showAll());
+
+        verify(enderecoRepository,times(1)).findAll();
     }
 
     // ---metodo showById---
     @Test
-    void showById() {
+    void showById_RetornarEntidadeQuandoIdExistir(){
+        when(enderecoRepository.findById(anyLong())).thenReturn(Optional.of(validEndereco));
+
+        EnderecoResponseDTO result = this.enderecoService.showById(1L);
+        assertNotNull(result);
+        assertEquals(validEndereco.getId(),result.id());
+
+        verify(enderecoRepository,times(1)).findById(1L);
+    }
+
+    @Test
+    void showById_LancamentoDeExcecaoQuandoIdNaoForEncontrado()
+    {
+        when(enderecoRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(IdNaoEncontradoException.class,() -> this.enderecoService.showById(99L));
+
+        verify(enderecoRepository,times(1)).findById(99L);
     }
 
     // ---metodo Delete---
-
     @Test
     void deleteById() {
+        
     }
 
     // ---metodo deleteAll---
