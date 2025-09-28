@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
+//Classe responsável por mostrar mensagem de exceção formatada
 @Getter
 @Setter
 @NoArgsConstructor

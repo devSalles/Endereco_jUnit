@@ -16,12 +16,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import jakarta.validation.*;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.TestPropertySource;
-
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -38,6 +36,8 @@ class EnderecoServiceTest {
 
     private Endereco validEndereco;
     private EnderecoRequestDTO validEnderecoRequestDTO;
+
+    //Validator usado para entrada de dados
     private static Validator validator;
 
     //Configuração do validador
@@ -74,6 +74,7 @@ class EnderecoServiceTest {
 
         Endereco result = this.enderecoService.add(validEnderecoRequestDTO);
         assertNotNull(result);
+
         //Verifica se o objeto de chamada e o mesmo do resultado
         assertEquals(validEnderecoRequestDTO.getRua(),result.getRua());
         assertEquals(validEnderecoRequestDTO.getNumero(),result.getNumero());
@@ -126,6 +127,7 @@ class EnderecoServiceTest {
 
     @Test
     void editById_LancarExcecaoQuandoRequisicaoForInvalida() {
+
         //Instância de requisção inválida para teste de lançamento de exceção
         EnderecoRequestDTO enderecoRequestDTO = new EnderecoRequestDTO();
         enderecoRequestDTO.setRua("");
@@ -148,7 +150,7 @@ class EnderecoServiceTest {
         //Checagem de lançamento de exceção para ID não encontrado
         assertThrows(IdNaoEncontradoException.class,()->this.enderecoService.editById(99L,validEnderecoRequestDTO));
 
-        //Verificações de procura de ID
+        //Verificação de chamada de repositório
         verify(enderecoRepository,times(1)).findById(99L);
         verify(enderecoRepository,never()).save(any(Endereco.class));
     }
@@ -158,6 +160,7 @@ class EnderecoServiceTest {
     void showAll_DeveRetornarTodosOsObjetosNoBancoDeDados() {
         when(enderecoRepository.findAll()).thenReturn(List.of(validEndereco));
 
+        //Lista para exibição de dados a partir do index 0
         List<EnderecoResponseDTO> result = this.enderecoService.showAll();
         assertNotNull(result);
         assertEquals(validEndereco.getRua(),result.get(0).rua());
@@ -165,6 +168,7 @@ class EnderecoServiceTest {
         assertEquals(validEndereco.getCidade(),result.get(0).cidade());
         assertEquals(validEndereco.getEstado(),result.get(0).estado());
 
+        //Verificação de chamada de repositório
         verify(enderecoRepository,times(1)).findAll();
     }
 
@@ -176,6 +180,7 @@ class EnderecoServiceTest {
         //Checagem de lançamento de exceção para banco de dados vazio
         assertThrows(IllegalArgumentException.class,() -> this.enderecoService.showAll());
 
+        //Verificação de chamada de repositório
         verify(enderecoRepository,times(1)).findAll();
     }
 
@@ -188,6 +193,7 @@ class EnderecoServiceTest {
         assertNotNull(result);
         assertEquals(validEndereco.getId(),result.id());
 
+        //Verificação de chamada de repositório
         verify(enderecoRepository,times(1)).findById(1L);
     }
 
@@ -199,6 +205,7 @@ class EnderecoServiceTest {
         //Checagem de lançamento de exceção para ID não encontrado
         assertThrows(IdNaoEncontradoException.class,() -> this.enderecoService.showById(99L));
 
+        //Verificação de chamada de repositório
         verify(enderecoRepository,times(1)).findById(99L);
     }
 
@@ -211,6 +218,7 @@ class EnderecoServiceTest {
         Boolean result = this.enderecoService.deleteById(1L);
         assertTrue(result);
 
+        //Verificação de chamada de repositório
         verify(enderecoRepository,times(1)).findById(1L);
         verify(enderecoRepository,times(1)).delete(validEndereco);
     }
@@ -223,12 +231,32 @@ class EnderecoServiceTest {
         //Checagem de lançamento de exceção para ID não encontrado
         assertThrows(IdNaoEncontradoException.class,()->this.enderecoService.deleteById(99L));
 
+        //Verificação de chamada de repositório
         verify(enderecoRepository,times(1)).findById(99L);
     }
 
     // ---metodo deleteAll---
     @Test
-    void deleteAll() {
+    void deleteAll_DeveDeletarTodasOsObjetosDoBanco() {
+
+        when(enderecoRepository.findAll()).thenReturn(List.of(validEndereco));
+
+        this.enderecoService.deleteAll();
+
+        //Verificação de chamada de repositório
+        verify(enderecoRepository,times(1)).deleteAll();
+    }
+
+    @Test
+    void deleteAll_DeveLancarExcecaoQuandoBancoEstiverVazio() {
+
+        when(enderecoRepository.findAll()).thenReturn(Collections.emptyList());
+
+        //Checagem de lançamento de exceção para banco de dados vazio
+        assertThrows(IllegalArgumentException.class,()->this.enderecoService.deleteAll());
+
+        //Verificação de chamada de repositório
+        verify(enderecoRepository,never()).deleteAll();
     }
 
 }

@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+//Responsável por fazer conversões de requisições
 @Getter
 @Setter
 @AllArgsConstructor
