@@ -19,13 +19,13 @@ import lombok.Setter;
 @NoArgsConstructor
 public class EnderecoRequestDTO {
 
-    @NotNull(message = "rua obrigatória") @NotBlank(message = "rua obrigátoria")
+    @NotNull(message = "rua obrigatória") @NotBlank(message = "rua obrigatória")
     private String rua;
 
     @NotNull(message = "número obrigatório")  @Min(value = 1,message = "Número deve ser maior que 0")
     private Integer numero;
 
-    @NotNull(message = "cidade obrigatória") @NotBlank(message = "cidade obrigátoria")
+    @NotNull(message = "cidade obrigatória") @NotBlank(message = "cidade obrigatória")
     private String cidade;
 
     @NotNull(message = "estado obrigatório") @Enumerated(EnumType.STRING)
